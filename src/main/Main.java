@@ -28,15 +28,16 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        boolean estado = false;
+        boolean on = true;
         BufferedReader consola = new BufferedReader(new InputStreamReader(System.in));
         ServicioRegistro sR = new ServicioRegistro();
-        
-        while (!estado) {
+
+        while (on) {
             int opcion = 0;
             String inputString, respuesta;
             String user, password;
-
+            Usuario usuario = new Usuario();
+            
             System.out.println("<----MENU CLIENTE BIBLIOTECA--->");
             System.out.println("| 1.  Registrarse              |");
             System.out.println("| 2.  Iniciar Sesión           |");
@@ -65,6 +66,9 @@ public class Main {
             }
             try {
                 switch (opcion) {
+                    case 0:
+                        on = false;
+                        break;
                     case 1:
                         System.out.println("\n");
                         System.out.println("SIGN UP (Registro)");
@@ -72,12 +76,21 @@ public class Main {
                         user = consola.readLine();
                         System.out.println("Palabra de paso: ");
                         password = consola.readLine();
-                        Usuario usuario = new Usuario();
                         usuario.setNombre(user);
                         usuario.setPassword(password);
                         respuesta = sR.signUp(usuario);
                         System.out.println(respuesta);
                         break;
+                    case 2:
+                        System.out.println("\n");
+                        System.out.println("LOG IN (Acceso Usuarios");
+                        System.out.println("Nombre: ");
+                        user = consola.readLine();
+                        System.out.println("Palabra de paso: ");
+                        password = consola.readLine();
+                        usuario.setNombre(user);
+                        usuario.setPassword(password);
+                        //respuesta
                 }
             } catch (IOException ex) {
                 System.out.println("Error al introducir datos por consola: " + ex);
