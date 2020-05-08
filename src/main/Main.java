@@ -5,6 +5,7 @@
  */
 package main;
 
+import RestServices.ServicioRegistro;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +30,8 @@ public class Main {
     public static void main(String[] args) {
         boolean estado = false;
         BufferedReader consola = new BufferedReader(new InputStreamReader(System.in));
-
+        ServicioRegistro sR = new ServicioRegistro();
+        
         while (!estado) {
             int opcion = 0;
             String inputString, respuesta;
@@ -64,14 +66,18 @@ public class Main {
             try {
                 switch (opcion) {
                     case 1:
-                        System.out.println("SIGN UP");
+                        System.out.println("\n");
+                        System.out.println("SIGN UP (Registro)");
                         System.out.println("Nombre: ");
                         user = consola.readLine();
+                        System.out.println("Palabra de paso: ");
                         password = consola.readLine();
                         Usuario usuario = new Usuario();
                         usuario.setNombre(user);
                         usuario.setPassword(password);
-                        //respuesta = 
+                        respuesta = sR.signUp(usuario);
+                        System.out.println(respuesta);
+                        break;
                 }
             } catch (IOException ex) {
                 System.out.println("Error al introducir datos por consola: " + ex);
