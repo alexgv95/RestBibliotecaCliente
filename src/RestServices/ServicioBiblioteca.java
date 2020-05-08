@@ -33,7 +33,7 @@ public class ServicioBiblioteca {
         webTarget = client.target(BASE_URI).path("biblioteca");
     }
 
-    public <T> T postBiblioteca(Object requestEntity, Class<T> responseType) throws ClientErrorException {
+    public <T> T postBiblioteca(Object requestEntity, Class<T> responseType, String token) throws ClientErrorException {
         return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
     }
 
