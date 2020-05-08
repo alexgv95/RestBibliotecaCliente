@@ -5,10 +5,13 @@
  */
 package main;
 
+import RestServices.ServicioAcceso;
+import RestServices.ServicioBiblioteca;
 import RestServices.ServicioRegistro;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import modelo.Biblioteca;
 import modelo.Usuario;
 
 /**
@@ -18,11 +21,11 @@ import modelo.Usuario;
 public class Main {
 
     String inputString, respuesta;
-    String tituloLibro, autorLibro;
+    static String nombreFacultad, nombreCiudad, tituloLibro, autorLibro;
     int numPag;
-    String token = "";
-    boolean tokenValidado = false;
-    boolean bibliotecaExiste = false;
+    static String token = "";
+    static boolean tokenValidado = false;
+    static boolean bibliotecaExiste = false;
 
     /**
      * @param args the command line arguments
@@ -31,13 +34,18 @@ public class Main {
         boolean on = true;
         BufferedReader consola = new BufferedReader(new InputStreamReader(System.in));
         ServicioRegistro sR = new ServicioRegistro();
-
+        ServicioAcceso sA = new ServicioAcceso();
+        ServicioBiblioteca sB = new ServicioBiblioteca();
+        
+        Biblioteca biblioteca = new Biblioteca();
+        
         while (on) {
             int opcion = 0;
             String inputString, respuesta;
             String user, password;
             Usuario usuario = new Usuario();
             
+            System.out.println("\n\n");
             System.out.println("<----MENU CLIENTE BIBLIOTECA--->");
             System.out.println("| 1.  Registrarse              |");
             System.out.println("| 2.  Iniciar Sesión           |");
@@ -68,6 +76,7 @@ public class Main {
                 switch (opcion) {
                     case 0:
                         on = false;
+                        System.out.println("Adios !");
                         break;
                     case 1:
                         System.out.println("\n");
@@ -83,19 +92,48 @@ public class Main {
                         break;
                     case 2:
                         System.out.println("\n");
-                        System.out.println("LOG IN (Acceso Usuarios");
+                        System.out.println("LOG IN (Acceso Usuarios)");
                         System.out.println("Nombre: ");
                         user = consola.readLine();
                         System.out.println("Palabra de paso: ");
                         password = consola.readLine();
                         usuario.setNombre(user);
                         usuario.setPassword(password);
-                        //respuesta
+                        respuesta = sA.acceder(usuario);
+                        if (respuesta.equals("no valido")) {
+                            System.out.println("Usuario o contraseña inccorectas, por favor intentelo de nuevo");
+                        } else {
+                            System.out.println("\nACCESS GRANTED !");
+                            System.out.println("Su token es: " + respuesta);
+                            token = respuesta;
+                        }
+                    case 3:
+                        if(!comprobarToken()){
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        System.out.println("Introduzca el nombre de la facultad: ");
+                        nombreFacultad = consola.readLine();
+                        System.out.println("Introduzcae el nombre de la ciudad");
+                        nombreCiudad = consola.readLine();
+                        biblioteca.setFacultad(nombreFacultad);
+                        biblioteca.setCiudad(nombreCiudad);
+                        Biblioteca bibNueva = sB.postBiblioteca(biblioteca, Biblioteca.class, token);
+                        System.out.println(bibNueva.toString());
                 }
             } catch (IOException ex) {
                 System.out.println("Error al introducir datos por consola: " + ex);
             }
         }
+    }
+    private static boolean comprobarToken() {
+        if (token.equals("")) {
+            tokenValidado = false;
+        } else {
+            tokenValidado = true;
+        }
+        return tokenValidado;
     }
 
 }
