@@ -36,15 +36,15 @@ public class Main {
         ServicioRegistro sR = new ServicioRegistro();
         ServicioAcceso sA = new ServicioAcceso();
         ServicioBiblioteca sB = new ServicioBiblioteca();
-        
+
         Biblioteca biblioteca = new Biblioteca();
-        
+
         while (on) {
             int opcion = 0;
             String inputString, respuesta;
             String user, password;
             Usuario usuario = new Usuario();
-            
+
             System.out.println("\n\n");
             System.out.println("<----MENU CLIENTE BIBLIOTECA--->");
             System.out.println("| 1.  Registrarse              |");
@@ -58,7 +58,7 @@ public class Main {
             System.out.println("| 9.  Borrar Libro             |");
             System.out.println("| 10. Modificar Libro          |");
             System.out.println("| 11. Exportar Biblioteca      |");
-            System.out.println("| 12. Importar Biblitoeca      |");
+            System.out.println("| 12. Importar Biblioteca      |");
             System.out.println("| 13. Exportar Libro           |");
             System.out.println("| 14. Importar Libro           |");
             System.out.println("| 15. Validar XSD              |");
@@ -68,6 +68,7 @@ public class Main {
             System.out.println("<------------------------------>");
 
             try {
+                System.out.print("\n-> Opcion: ");
                 opcion = Integer.parseInt(consola.readLine());
             } catch (IOException ex) {
                 System.out.println("Introduzca un numero por favor");
@@ -107,8 +108,9 @@ public class Main {
                             System.out.println("Su token es: " + respuesta);
                             token = respuesta;
                         }
+                        break;
                     case 3:
-                        if(!comprobarToken()){
+                        if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
                                     + "por favor inicie sesión");
                             break;
@@ -120,13 +122,16 @@ public class Main {
                         biblioteca.setFacultad(nombreFacultad);
                         biblioteca.setCiudad(nombreCiudad);
                         Biblioteca bibNueva = sB.postBiblioteca(biblioteca, Biblioteca.class, token);
+                        System.out.println("\nBiblioteca creada con éxito !");
                         System.out.println(bibNueva.toString());
+                        break;
                 }
             } catch (IOException ex) {
                 System.out.println("Error al introducir datos por consola: " + ex);
             }
         }
     }
+
     private static boolean comprobarToken() {
         if (token.equals("")) {
             tokenValidado = false;
