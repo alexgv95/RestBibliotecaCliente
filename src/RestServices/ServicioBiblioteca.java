@@ -34,19 +34,43 @@ public class ServicioBiblioteca {
         webTarget = client.target(BASE_URI).path("biblioteca");
     }
 
-    public <T> T postBiblioteca(Object requestEntity, Class<T> responseType, String token) throws ClientErrorException {
-//        Invocation.Builder header = webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token);
-//        System.out.println("El token es "+ token);
-//        Invocation buildPost = header.buildPost(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
-//        T invoke = buildPost.invoke(responseType);
-        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
-
-//        return invoke;
+    public String getLibrosTexto(String token) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("libro/texto");
+        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).header(HttpHeaders.AUTHORIZATION, token).get(String.class);
     }
 
-    public <T> T getBiblioteca(Class<T> responseType) throws ClientErrorException {
+    public <T> T putLibro(Object requestEntity, Class<T> responseType, String numLibro, String token) throws ClientErrorException {
+        return webTarget.path(java.text.MessageFormat.format("libro/{0}", new Object[]{numLibro})).request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
+    }
+
+    public <T> T deleteLibro(Class<T> responseType, String numLibro, String token) throws ClientErrorException {
+        return webTarget.path(java.text.MessageFormat.format("libro/{0}", new Object[]{numLibro})).request().header(HttpHeaders.AUTHORIZATION, token).delete(responseType);
+    }
+
+    public <T> T getLibro(Class<T> responseType, String numLibro, String token) throws ClientErrorException {
         WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+        resource = resource.path(java.text.MessageFormat.format("libro/{0}", new Object[]{numLibro}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).get(responseType);
+    }
+
+    public <T> T postLibro(Object requestEntity, Class<T> responseType, String token) throws ClientErrorException {
+        return webTarget.path("libro").request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
+    }
+
+    public <T> T postBiblioteca(Object requestEntity, Class<T> responseType, String token) throws ClientErrorException {
+        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), responseType);
+    }
+
+    public <T> T getBiblioteca(Class<T> responseType, String token) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).get(responseType);
+    }
+
+    public <T> T getLibros(Class<T> responseType, String token) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("libro");
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).get(responseType);
     }
 
     public void close() {

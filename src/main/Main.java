@@ -11,7 +11,11 @@ import RestServices.ServicioRegistro;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import modelo.Biblioteca;
+import modelo.Libro;
+import modelo.ListaLibros;
 import modelo.Usuario;
 
 /**
@@ -20,9 +24,9 @@ import modelo.Usuario;
  */
 public class Main {
 
-    String inputString, respuesta;
+    static String inputString, respuesta, numLibro;
     static String nombreFacultad, nombreCiudad, tituloLibro, autorLibro;
-    int numPag;
+    static int numPag;
     static String token = "";
     static boolean tokenValidado = false;
     static boolean bibliotecaExiste = false;
@@ -38,6 +42,7 @@ public class Main {
         ServicioBiblioteca sB = new ServicioBiblioteca();
 
         Biblioteca biblioteca = new Biblioteca();
+        Libro libro = new Libro();
 
         while (on) {
             int opcion = 0;
@@ -54,7 +59,7 @@ public class Main {
             System.out.println("| 5.  Mostrar Biblioteca       |");
             System.out.println("| 6.  Añadir Libro             |");
             System.out.println("| 7.  Obtener Libro            |");
-            System.out.println("| 8.  Mostrar Libro            |");
+            System.out.println("| 8.  Mostrar Libros           |");
             System.out.println("| 9.  Borrar Libro             |");
             System.out.println("| 10. Modificar Libro          |");
             System.out.println("| 11. Exportar Biblioteca      |");
@@ -125,6 +130,148 @@ public class Main {
                         System.out.println("\nBiblioteca creada con éxito !");
                         System.out.println(bibNueva.toString());
                         break;
+                    case 4:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (comprobarBiblioteca(biblioteca)) {
+                            System.out.println("Biblioteca obtenida: " + biblioteca.getFacultad());
+                        } else {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        break;
+                    case 5:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (comprobarBiblioteca(biblioteca)) {
+                            respuesta = sB.getLibrosTexto(token);
+                            System.out.println("\n");
+                            System.out.println(respuesta);
+                        } else {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        break;
+                    case 6:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+
+                        System.out.println("\nFormulario de creación de libro:");
+                        System.out.println("Titulo del libro: ");
+                        tituloLibro = consola.readLine();
+                        System.out.println("Nombre del autor: ");
+                        autorLibro = consola.readLine();
+                        System.out.println("Número de páginas: ");
+                        numPag = Integer.parseInt(consola.readLine());
+
+                        libro.setTitulo(tituloLibro);
+                        libro.setAutor(autorLibro);
+                        libro.setNumPag(numPag);
+
+                        Libro libroNuevo = sB.postLibro(libro, Libro.class, token);
+                        System.out.println("Libro creado con exito !");
+                        System.out.println(libroNuevo);
+                        break;
+                    case 7:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        List listaLibros = biblioteca.getLibros();
+                        if (listaLibros.isEmpty()) {
+                            System.out.println("No hay libros en la biblioteca");
+                            break;
+                        }
+                        ListaLibros listaLibros2 = (ListaLibros) sB.getLibros(ListaLibros.class, token);
+                        System.out.println(listaLibros2);
+                        System.out.println("Introduce el [Numero] del libro a obtener: ");
+                        numLibro = consola.readLine();
+                        libro = sB.getLibro(Libro.class, numLibro, token);
+                        System.out.println("\nSe ha devuelto el libro: " + libro.getTitulo());
+                        break;
+                    case 9:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        List listaLibros3 = biblioteca.getLibros();
+                        if (listaLibros3.isEmpty()) {
+                            System.out.println("No hay libros en la biblioteca");
+                            break;
+                        }
+                        ListaLibros listaLibros4 = (ListaLibros) sB.getLibros(ListaLibros.class, token);
+                        System.out.println(listaLibros4);
+                        System.out.println("Introduce el [Numero] del libro a eliminar: ");
+                        numLibro = consola.readLine();
+                        biblioteca = sB.deleteLibro(Biblioteca.class, numLibro, token);
+                        System.out.println("\nSe ha borrado con exito !");
+                        System.out.println(biblioteca);
+                        break;
+                    case 10:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        List listaLibros5 = biblioteca.getLibros();
+                        if (listaLibros5.isEmpty()) {
+                            System.out.println("No hay libros en la biblioteca");
+                            break;
+                        }
+                        ListaLibros listaLibros6 = (ListaLibros) sB.getLibros(ListaLibros.class, token);
+                        System.out.println(listaLibros6);
+                        System.out.println("Introduce el [Numero] del libro a modificar: ");
+                        numLibro = consola.readLine();
+
+                        System.out.println("\nFormulario de modificación de libro:");
+                        System.out.println("Titulo del libro: ");
+                        tituloLibro = consola.readLine();
+                        System.out.println("Nombre del autor: ");
+                        autorLibro = consola.readLine();
+                        System.out.println("Número de páginas: ");
+                        numPag = Integer.parseInt(consola.readLine());
+
+                        libro.setTitulo(tituloLibro);
+                        libro.setAutor(autorLibro);
+                        libro.setNumPag(numPag);
+
+                        Libro libroNuevo2 = sB.putLibro(libro, Libro.class, numLibro, token);
+                        System.out.println("\nLibro: " + libroNuevo2.getTitulo() + " modificado con exito");
+                        System.out.println("\n\t" + libroNuevo2);
+                        break;
                 }
             } catch (IOException ex) {
                 System.out.println("Error al introducir datos por consola: " + ex);
@@ -133,12 +280,12 @@ public class Main {
     }
 
     private static boolean comprobarToken() {
-        if (token.equals("")) {
-            tokenValidado = false;
-        } else {
-            tokenValidado = true;
-        }
+        tokenValidado = !token.equals("");
         return tokenValidado;
     }
 
+    private static boolean comprobarBiblioteca(Biblioteca biblioteca) {
+        bibliotecaExiste = !biblioteca.getFacultad().equals("");
+        return bibliotecaExiste;
+    }
 }
