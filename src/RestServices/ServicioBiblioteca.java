@@ -34,6 +34,20 @@ public class ServicioBiblioteca {
         webTarget = client.target(BASE_URI).path("biblioteca");
     }
 
+    public <T> T importarBiblioteca(Class<T> responseType, String nombreFichero, String contenidoFichero, String token) {
+        WebTarget resource = webTarget;
+        resource = resource.path("import");
+        resource = resource.queryParam("nombreFichero", nombreFichero).queryParam("contenidoFichero", contenidoFichero);
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).header(HttpHeaders.AUTHORIZATION, token).get(responseType);
+    }
+
+    public String exportarBiblioteca(String nombreFichero, String token) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("export");
+        resource = resource.queryParam("nombreFichero", nombreFichero);
+        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).header(HttpHeaders.AUTHORIZATION, token).get(String.class);
+    }
+
     public String getLibrosTexto(String token) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path("libro/texto");

@@ -10,10 +10,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:ServicioAcceso [login]<br>
+ * Jersey REST client generated for REST resource:ServicioValidador
+ * [validador]<br>
  * USAGE:
  * <pre>
- *        ServicioAcceso client = new ServicioAcceso();
+ *        ServicioValidador client = new ServicioValidador();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
@@ -21,24 +22,19 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Alex
  */
-public class ServicioAcceso {
+public class ServicioValidador {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:8080/RestBibliotecaServer/webresources";
 
-    public ServicioAcceso() {
+    public ServicioValidador() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("login");
+        webTarget = client.target(BASE_URI).path("validador");
     }
 
-    public String acceder(Object requestEntity) throws ClientErrorException {
-        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), String.class);
-    }
-
-    public String getXml() throws ClientErrorException {
-        WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(String.class);
+    public String postValidarXSD(Object requestEntity) throws ClientErrorException {
+        return webTarget.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.TEXT_PLAIN), String.class);
     }
 
     public void close() {

@@ -6,13 +6,22 @@
 package main;
 
 import RestServices.ServicioAcceso;
+//import RestServices.ServicioAduanas;
 import RestServices.ServicioBiblioteca;
+import RestServices.ServicioDesconexion;
 import RestServices.ServicioRegistro;
+import RestServices.ServicioValidador;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import modelo.Biblioteca;
 import modelo.Libro;
 import modelo.ListaLibros;
@@ -24,7 +33,7 @@ import modelo.Usuario;
  */
 public class Main {
 
-    static String inputString, respuesta, numLibro;
+    static String nombreFichero, respuesta, numLibro, contenidoFichero;
     static String nombreFacultad, nombreCiudad, tituloLibro, autorLibro;
     static int numPag;
     static String token = "";
@@ -40,13 +49,17 @@ public class Main {
         ServicioRegistro sR = new ServicioRegistro();
         ServicioAcceso sA = new ServicioAcceso();
         ServicioBiblioteca sB = new ServicioBiblioteca();
+        ServicioValidador sV = new ServicioValidador();
+        ServicioDesconexion sD = new ServicioDesconexion();
+//        ServicioAduanas sAd = new ServicioAduanas();
 
         Biblioteca biblioteca = new Biblioteca();
         Libro libro = new Libro();
+        ListaLibros listaLibros = new ListaLibros();
+        File file = null;
 
         while (on) {
             int opcion = 0;
-            String inputString, respuesta;
             String user, password;
             Usuario usuario = new Usuario();
 
@@ -84,6 +97,7 @@ public class Main {
                         on = false;
                         System.out.println("Adios !");
                         break;
+
                     case 1:
                         System.out.println("\n");
                         System.out.println("SIGN UP (Registro)");
@@ -96,6 +110,7 @@ public class Main {
                         respuesta = sR.signUp(usuario);
                         System.out.println(respuesta);
                         break;
+
                     case 2:
                         System.out.println("\n");
                         System.out.println("LOG IN (Acceso Usuarios)");
@@ -114,6 +129,7 @@ public class Main {
                             token = respuesta;
                         }
                         break;
+
                     case 3:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -130,6 +146,7 @@ public class Main {
                         System.out.println("\nBiblioteca creada con éxito !");
                         System.out.println(bibNueva.toString());
                         break;
+
                     case 4:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -144,6 +161,7 @@ public class Main {
                             break;
                         }
                         break;
+
                     case 5:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -160,6 +178,7 @@ public class Main {
                             break;
                         }
                         break;
+
                     case 6:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -188,6 +207,7 @@ public class Main {
                         System.out.println("Libro creado con exito !");
                         System.out.println(libroNuevo);
                         break;
+
                     case 7:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -199,18 +219,34 @@ public class Main {
                             System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
                             break;
                         }
-                        List listaLibros = biblioteca.getLibros();
-                        if (listaLibros.isEmpty()) {
+                        List listaLibrosL = biblioteca.getLibros();
+                        if (listaLibrosL.isEmpty()) {
                             System.out.println("No hay libros en la biblioteca");
                             break;
                         }
-                        ListaLibros listaLibros2 = (ListaLibros) sB.getLibros(ListaLibros.class, token);
-                        System.out.println(listaLibros2);
+                        listaLibros = sB.getLibros(ListaLibros.class, token);
+                        System.out.println(listaLibros);
                         System.out.println("Introduce el [Numero] del libro a obtener: ");
                         numLibro = consola.readLine();
                         libro = sB.getLibro(Libro.class, numLibro, token);
                         System.out.println("\nSe ha devuelto el libro: " + libro.getTitulo());
                         break;
+
+                    case 8:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        listaLibros = (ListaLibros) sB.getLibros(ListaLibros.class, token);
+                        System.out.println(listaLibros);
+                        break;
+
                     case 9:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -235,6 +271,7 @@ public class Main {
                         System.out.println("\nSe ha borrado con exito !");
                         System.out.println(biblioteca);
                         break;
+
                     case 10:
                         if (!comprobarToken()) {
                             System.out.println("No se ha encontrado ningún token, "
@@ -272,6 +309,81 @@ public class Main {
                         System.out.println("\nLibro: " + libroNuevo2.getTitulo() + " modificado con exito");
                         System.out.println("\n\t" + libroNuevo2);
                         break;
+
+                    case 11:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        System.out.println("Introduzca el nombre del fichero donde va a ser exportada la biblioteca actual");
+                        nombreFichero = consola.readLine();
+                        respuesta = sB.exportarBiblioteca(nombreFichero, token);
+                        descifrarString(respuesta, nombreFichero);
+                        System.out.println("La biblioteca " + biblioteca.getFacultad() + ""
+                                + " ha sido exportada al fichero " + nombreFichero + 
+                                " con exito !");
+                        break;
+                        
+                    case 12:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        System.out.println("Se va a sobreescribir la biblioteca actual, ¿Seguro que quiere continuar? [s/n]");
+                        respuesta = consola.readLine();
+                        if(respuesta.equalsIgnoreCase("n")){
+                            break;
+                        }
+                        System.out.println("Introduzca el nombre del fichero XML (sin .xml)");
+                        nombreFichero = consola.readLine();
+                        file = new File("xml/" + nombreFichero + ".xml");
+                        contenidoFichero = codificadorString(file);
+                        biblioteca = sB.importarBiblioteca(Biblioteca.class, nombreFichero, contenidoFichero, token);
+                        System.out.println("La biblioteca ha sido importada con exito !");
+                        System.out.println(biblioteca);
+                        break;
+                        
+                    case 15:
+                        System.out.println("\nHerramienta de validacion XSD");
+                        System.out.println("Introduzca el fichero a comprobar (sin .xml)");
+                        System.out.println("Consejo: Hay un fichero preparado llamado bibliotecaXSD y otro bibliotecaXSDMal ");
+                        nombreFichero = consola.readLine();
+                        file = new File("xml/" + nombreFichero + ".xml");
+                        String contenidoFicheroXSD = codificadorStringXSD(file);
+                        respuesta = sV.postValidarXSD(contenidoFicheroXSD);
+                        System.out.println(respuesta);
+                        System.out.println("\n\n");
+                        break;
+
+                    case 16:
+                        if (!comprobarToken()) {
+                            System.out.println("No se ha encontrado ningún token, "
+                                    + "por favor inicie sesión");
+                            break;
+                        }
+                        biblioteca = sB.getBiblioteca(Biblioteca.class, token);
+                        if (!comprobarBiblioteca(biblioteca)) {
+                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
+                            break;
+                        }
+                        respuesta = sD.cerrarSesion(token);
+                        token = "";
+                        System.out.println(respuesta);
+                        System.out.println("Se ha cerrado su sesión !");
+                        break;
+
                 }
             } catch (IOException ex) {
                 System.out.println("Error al introducir datos por consola: " + ex);
@@ -287,5 +399,65 @@ public class Main {
     private static boolean comprobarBiblioteca(Biblioteca biblioteca) {
         bibliotecaExiste = !biblioteca.getFacultad().equals("");
         return bibliotecaExiste;
+    }
+
+    private static String codificadorString(File file) {
+        String contenidoFichero = "";
+        String STOP = "#";
+        try {
+            BufferedReader reader;
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+
+            while (line != null) {
+                contenidoFichero = contenidoFichero + line + STOP;
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return contenidoFichero;
+    }
+
+    private static String codificadorStringXSD(File file) {
+        String contenidoFichero = "";
+        try {
+            BufferedReader reader;
+            reader = new BufferedReader(new FileReader(file));
+            String line = reader.readLine();
+
+            while (line != null) {
+                contenidoFichero = contenidoFichero + line;
+                line = reader.readLine();
+            }
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return contenidoFichero;
+    }
+
+    private static void descifrarString(String respuesta, String nombreFichero) {
+        String newRespuesta = respuesta.replaceAll("#", "\n");
+        System.out.println(newRespuesta);
+        BufferedWriter bw = null;
+        try {
+            File fichero = new File("xml/" + nombreFichero + ".xml");
+            bw = new BufferedWriter(new FileWriter(fichero));
+            bw.write(newRespuesta);
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                bw.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }

@@ -8,12 +8,14 @@ package RestServices;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.HttpHeaders;
 
 /**
- * Jersey REST client generated for REST resource:ServicioAcceso [login]<br>
+ * Jersey REST client generated for REST resource:ServicioDesconexion
+ * [logout]<br>
  * USAGE:
  * <pre>
- *        ServicioAcceso client = new ServicioAcceso();
+ *        ServicioDesconexion client = new ServicioDesconexion();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
@@ -21,24 +23,19 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Alex
  */
-public class ServicioAcceso {
+public class ServicioDesconexion {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:8080/RestBibliotecaServer/webresources";
 
-    public ServicioAcceso() {
+    public ServicioDesconexion() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("login");
+        webTarget = client.target(BASE_URI).path("logout");
     }
 
-    public String acceder(Object requestEntity) throws ClientErrorException {
-        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), String.class);
-    }
-
-    public String getXml() throws ClientErrorException {
-        WebTarget resource = webTarget;
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(String.class);
+    public String cerrarSesion(String token) throws ClientErrorException {
+        return webTarget.request().header(HttpHeaders.AUTHORIZATION, token).post(null, String.class);
     }
 
     public void close() {
