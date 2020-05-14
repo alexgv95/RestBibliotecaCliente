@@ -34,6 +34,27 @@ public class ServicioBiblioteca {
         webTarget = client.target(BASE_URI).path("biblioteca");
     }
 
+    public String importarLibro(String nombreFichero, String contenidoFichero, String token) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (nombreFichero != null) {
+            resource = resource.queryParam("nombreFichero", nombreFichero);
+        }
+        if (contenidoFichero != null) {
+            resource = resource.queryParam("contenidoFichero", contenidoFichero);
+        }
+        resource = resource.path("libro/import");
+        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).header(HttpHeaders.AUTHORIZATION, token).get(String.class);
+    }
+
+    public String exportarLibro(String numLibro, String nombreFichero, String token) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (nombreFichero != null) {
+            resource = resource.queryParam("nombreFichero", nombreFichero);
+        }
+        resource = resource.path(java.text.MessageFormat.format("libro/{0}/export", new Object[]{numLibro}));
+        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).header(HttpHeaders.AUTHORIZATION, token).get(String.class);
+    }
+
     public <T> T importarBiblioteca(Class<T> responseType, String nombreFichero, String contenidoFichero, String token) {
         WebTarget resource = webTarget;
         resource = resource.path("import");

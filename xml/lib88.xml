@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Libro>
+    <titulo>El arte del suspenso II</titulo>
+    <autor>Javier Sancerni</autor>
+    <numPag>265</numPag>
+    <idLibro>1</idLibro>
+    <linkLibro>http://localhost:8080/RestBibliotecaServer/webresources/biblioteca/libro/1</linkLibro>
+</Libro>
