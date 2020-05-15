@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Biblioteca>
+    <facultad>Letras</facultad>
+    <ciudad>Hell</ciudad>
+    <Libros>
+        <Libro>
+            <titulo>El arte del suspenso II</titulo>
+            <autor>Javier Sancerni</autor>
+            <numPag>265</numPag>
+            <idLibro>6</idLibro>
+        </Libro>
+        <Libro>
+            <titulo>Magic for dummies II</titulo>
+            <autor>Pedante</autor>
+            <numPag>77</numPag>
+            <idLibro>7</idLibro>
+        </Libro>
+    </Libros>
+    <linkBiblioteca>http://localhost:8080/RestBibliotecaServer/webresources/biblioteca/</linkBiblioteca>
+    <idBiblioteca>3</idBiblioteca>
+</Biblioteca>

@@ -50,7 +50,6 @@ public class Main {
         ServicioBiblioteca sB = new ServicioBiblioteca();
         ServicioValidador sV = new ServicioValidador();
         ServicioDesconexion sD = new ServicioDesconexion();
-//        ServicioAduanas sAd = new ServicioAduanas();
 
         Biblioteca biblioteca = new Biblioteca();
         Libro libro = new Libro();
@@ -336,10 +335,7 @@ public class Main {
                             break;
                         }
                         biblioteca = sB.getBiblioteca(Biblioteca.class, token);
-                        if (!comprobarBiblioteca(biblioteca)) {
-                            System.out.println("No se ha encontrado ninguna biblioteca relacionada con este usuario");
-                            break;
-                        }
+                        
                         System.out.println("Se va a sobreescribir la biblioteca actual, ¿Seguro que quiere continuar? [s/n]");
                         respuesta = consola.readLine();
                         if (respuesta.equalsIgnoreCase("n")) {
@@ -373,7 +369,7 @@ public class Main {
                         System.out.println(listaLibros);
                         System.out.println("Introduce el [Numero] del libro a exportar: ");
                         numLibro = consola.readLine();
-                        System.out.println("Introduzca el nombre del fichero donde va a ser el libro elegido");
+                        System.out.println("Introduzca el nombre del fichero donde va a ser exportado el libro elegido");
                         nombreFichero = consola.readLine();
                         respuesta = sB.exportarLibro(numLibro, nombreFichero, token);
                         descifrarString(respuesta, nombreFichero);

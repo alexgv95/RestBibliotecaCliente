@@ -2,7 +2,7 @@
 <Biblioteca>
     <facultad>EPS</facultad>
     <ciudad>Madrid</ciudad>
-    <ListaLibros>
+    <Libros>
         <Libro>
             <titulo>El arte del suspenso</titulo>
             <autor>Javier Sancerni</autor>
@@ -33,5 +33,5 @@
             <autor>Angel Nunez</autor>
             <numPag>550</numPag>
         </Libro>
-    </ListaLibros>
+    <Libros>
 </Biblioteca>
