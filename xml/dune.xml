@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Libro>
+    <titulo>Dune</titulo>
+    <autor>Frank Herbert</autor>
+    <numPag>800</numPag>
+    <idLibro>21</idLibro>
+    <linkLibro>http://localhost:8080/RestBibliotecaServer/webresources/biblioteca/libro/21</linkLibro>
+</Libro>

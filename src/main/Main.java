@@ -335,7 +335,7 @@ public class Main {
                             break;
                         }
                         biblioteca = sB.getBiblioteca(Biblioteca.class, token);
-                        
+
                         System.out.println("Se va a sobreescribir la biblioteca actual, ¿Seguro que quiere continuar? [s/n]");
                         respuesta = consola.readLine();
                         if (respuesta.equalsIgnoreCase("n")) {

@@ -33,7 +33,7 @@ public class ServicioAcceso {
     }
 
     public String acceder(Object requestEntity) throws ClientErrorException {
-        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), String.class);
+        return webTarget.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), String.class);
     }
 
     public String getXml() throws ClientErrorException {

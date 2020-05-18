@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Libro>
+    <titulo>Dune</titulo>
+    <autor>Frank Herbert</autor>
+    <numPag>800</numPag>
+    <idLibro>35</idLibro>
+</Libro>
